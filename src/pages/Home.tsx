@@ -88,7 +88,7 @@ export function Home() {
         )}
       </div>
 
-      <div style={{ marginTop: '4rem', padding: '3rem 0', borderTop: '1px solid var(--border)' }}>
+      <div style={{ marginTop: '4rem', padding: '0 0', borderTop: '1px solid var(--border)', height: '1px', overflow: 'hidden' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '2rem', textAlign: 'center' }}>
           Premium Featured Experience {!hasInteracted && <span style={{ fontSize: '0.9rem', color: 'var(--primary)', display: 'block', fontWeight: 500 }}>(Click anywhere on page to Unlock Playback)</span>}
         </h2>
