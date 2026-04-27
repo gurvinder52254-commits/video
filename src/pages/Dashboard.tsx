@@ -1,9 +1,24 @@
 import React, { useState, useRef } from 'react';
 import { useVideos } from '../hooks/useVideos';
 import type { Video } from '../hooks/useVideos';
-import { Plus, Edit2, Trash2, X, Check, Upload, Link as LinkIcon, FileVideo, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Check, Upload, Link as LinkIcon, FileVideo, Image as ImageIcon, Eye, EyeOff } from 'lucide-react';
 
 export function Dashboard() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => sessionStorage.getItem('dashboard_auth') === 'true');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput === 'gurvindersingh85698') {
+      setIsAuthenticated(true);
+      sessionStorage.setItem('dashboard_auth', 'true');
+    } else {
+      alert('Incorrect password');
+      setPasswordInput('');
+    }
+  };
+
   const { videos, addVideo, updateVideoMetadata, removeVideo, featuredVideos, addFeaturedVideo, removeFeaturedVideo, updateFeaturedVideoInfo, loading } = useVideos();
   const [isAdding, setIsAdding] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -76,6 +91,49 @@ export function Dashboard() {
     });
     setIsAdding(true);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{
+        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 9999,
+        backdropFilter: 'blur(5px)'
+      }}>
+        <div className="glass" style={{ padding: '3rem', textAlign: 'center', width: '100%', maxWidth: '400px', margin: '1rem', animation: 'slideIn 0.3s ease-out', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <h2 style={{ marginBottom: '2rem' }}>Admin Vault</h2>
+          <form onSubmit={handleLogin}>
+            <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                className="input-field"
+                placeholder="Enter Password"
+                value={passwordInput}
+                onChange={e => setPasswordInput(e.target.value)}
+                style={{ width: '100%', boxSizing: 'border-box', paddingRight: '2.5rem' }}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
+                  background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.75rem' }}>
+              Unlock Dashboard
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) return <div className="container">Loading storage...</div>;
 
